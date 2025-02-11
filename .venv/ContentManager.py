@@ -9,16 +9,18 @@ added_items = set()
 
 def search_function(event=None):
     """Update search results in real time.
-    When no text is entered, show all program names."""
+    When no text is entered, show all program names sorted alphabetically."""
     query = search_entry.get().lower()
     results_listbox.delete(0, tk.END)
     if not query:
-        for item in program_names:
+        # Insert all program names sorted alphabetically (case-insensitive)
+        for item in sorted(program_names, key=str.lower):
             results_listbox.insert(tk.END, item)
     else:
-        for item in program_names:
-            if query in item.lower():
-                results_listbox.insert(tk.END, item)
+        # Filter matching programs then sort them alphabetically
+        matching = [item for item in program_names if query in item.lower()]
+        for item in sorted(matching, key=str.lower):
+            results_listbox.insert(tk.END, item)
 
 def add_selected_item():
     """Add the selected program from the search results to the left pane list."""
