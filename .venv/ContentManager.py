@@ -117,14 +117,12 @@ root = tk.Tk()
 root.title("Content Manager")
 root.geometry("800x600")
 
-# Container for the three main panes
-panes_frame = tk.Frame(root)
-panes_frame.pack(side="top", fill="both", expand=True)
+# Create a PanedWindow for horizontal resizing of the three panes
+panes_pane = tk.PanedWindow(root, orient=tk.HORIZONTAL)
+panes_pane.pack(side="top", fill="both", expand=True)
 
 # ----------------- Left Pane -----------------
-left_frame = tk.Frame(panes_frame, bd=2, relief="sunken", width=150)
-left_frame.pack(side="left", fill="both", expand=True)
-
+left_frame = tk.Frame(panes_pane, bd=2, relief="sunken")
 tk.Label(left_frame, text="Programs to Install:", anchor="w").pack(fill="x", padx=5, pady=5)
 
 left_listbox = tk.Listbox(left_frame)
@@ -134,11 +132,12 @@ left_scrollbar = tk.Scrollbar(left_frame, orient="vertical", command=left_listbo
 left_scrollbar.pack(side="right", fill="y")
 left_listbox.config(yscrollcommand=left_scrollbar.set)
 
-# ----------------- Middle Pane -----------------
-middle_frame = tk.Frame(panes_frame, bd=2, relief="sunken", width=200)
-middle_frame.pack(side="left", fill="y")
+panes_pane.add(left_frame, minsize=150)
 
+# ----------------- Middle Pane -----------------
+middle_frame = tk.Frame(panes_pane, bd=2, relief="sunken")
 tk.Label(middle_frame, text="Search Programs:").pack(pady=5)
+
 search_entry = tk.Entry(middle_frame)
 search_entry.pack(pady=5, padx=5)
 
@@ -156,13 +155,13 @@ search_entry.bind("<KeyRelease>", search_function)
 # Populate the list initially.
 search_function()
 
-# ----------------- Right Pane -----------------
-right_frame = tk.Frame(panes_frame, bd=2, relief="sunken", width=250)
-right_frame.pack(side="left", fill="both", expand=True)
+panes_pane.add(middle_frame, minsize=200)
 
+# ----------------- Right Pane -----------------
+right_frame = tk.Frame(panes_pane, bd=2, relief="sunken")
 tk.Label(right_frame, text="Profile Options:").pack(pady=5)
 
-# Create profile checkboxes for "Profile 1" to "Profile 8"
+# Create profile checkboxes with updated names
 profile_names = [
     "Gaming", "Productivity", "Workstation", "Content Creation",
     "Developer", "Education", "Server", "Corporate"
@@ -174,6 +173,8 @@ for name in profile_names:
     profile_vars[name] = var
     cb = tk.Checkbutton(right_frame, text=name, variable=var)
     cb.pack(anchor="w", padx=5, pady=2)
+
+panes_pane.add(right_frame, minsize=250)
 
 # ----------------- Bottom Button Bar -----------------
 bottom_frame = tk.Frame(root)
